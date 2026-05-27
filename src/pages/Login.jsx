@@ -1,62 +1,64 @@
 import { useState } from "react";
-import axios from "axios";import api from "../api/axios";
+import axios from "axios";
+import api from "../api/axios";
 import { useNavigate, Link } from "react-router-dom";
 
 function Login() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const [formData, setFormData] = useState({ email: "", password: "" });
-    const [loading, setLoading] = useState(false);
-    const [toast, setToast] = useState(null); // { type: "success" | "error", message: string }
-    const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState(null); // { type: "success" | "error", message: string }
+  const [showPassword, setShowPassword] = useState(false);
 
-    const showToast = (type, message) => {
-        setToast({ type, message });
-        if (type === "success") return; // success auto-navigates, no need to clear
-        setTimeout(() => setToast(null), 3500);
-    };
+  const showToast = (type, message) => {
+    setToast({ type, message });
+    if (type === "success") return; // success auto-navigates, no need to clear
+    setTimeout(() => setToast(null), 3500);
+  };
 
-    const handleChange = (e) =>
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setToast(null);
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-        try {
-           const response = await api.post(
-    "/api/auth/login",
-    formData
-);
+    setLoading(true);
 
-            sessionStorage.setItem("token", response.data);
-            showToast("success", "Logged in successfully");
+    try {
+      const response = await api.post("/api/auth/login", formData);
 
-            setTimeout(() => navigate("/dashboard", { replace: true }), 1200);
+      if (response.data.token) {
+        sessionStorage.setItem("token", response.data.token);
 
-        } catch (error) {
-            console.error(error);
-            const msg = error.response?.data?.message || "Invalid email or password.";
-            showToast("error", msg);
-        } finally {
-            setLoading(false);
-        }
-    };
+        showToast("success", "Welcome back!");
 
-    return (
-        <div
-            style={{
-                minHeight: "100vh",
-                background: "#f5f4f0",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: 20,
-                fontFamily: "'DM Sans', sans-serif",
-            }}
-        >
-            <style>{`
+        navigate("/dashboard");
+      } else {
+        showToast("error", response.data.error);
+      }
+    } catch (error) {
+      console.error(error);
+
+      showToast("error", "Login Failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#f5f4f0",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 20,
+        fontFamily: "'DM Sans', sans-serif",
+      }}
+    >
+      <style>{`
                 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
 
                 * { box-sizing: border-box; }
@@ -180,190 +182,193 @@ function Login() {
                 }
             `}</style>
 
-            <div
-                className="login-card"
-                style={{
-                    background: "#fff",
-                    borderRadius: 22,
-                    border: "1px solid #ebebeb",
-                    boxShadow: "0 8px 40px rgba(0,0,0,0.08)",
-                    width: "100%",
-                    maxWidth: 420,
-                    padding: "38px 36px 32px",
-                }}
-            >
-                {/* LOGO + HEADING */}
-                <div style={{ marginBottom: 28, textAlign: "center" }}>
-                    <div
-                        style={{
-                            width: 44,
-                            height: 44,
-                            background: "#1a1a1a",
-                            borderRadius: 12,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            margin: "0 auto 16px",
-                        }}
-                    >
-                        <span style={{ color: "#fff", fontSize: 20 }}>✦</span>
-                    </div>
-                    <h1
-                        style={{
-                            fontSize: 24,
-                            fontWeight: 700,
-                            color: "#1a1a1a",
-                            margin: "0 0 6px",
-                            letterSpacing: "-0.4px",
-                        }}
-                    >
-                        Welcome back
-                    </h1>
-                    <p style={{ color: "#999", fontSize: 14, margin: 0 }}>
-                        Sign in to your TaskFlow account
-                    </p>
-                </div>
-
-                {/* TOAST */}
-                {toast && (
-                    <div
-                        className={`toast ${
-                            toast.type === "success" ? "toast-success" : "toast-error"
-                        }`}
-                        style={{ marginBottom: 18 }}
-                    >
-                        <span style={{ fontSize: 16 }}>
-                            {toast.type === "success" ? "✓" : "⚠"}
-                        </span>
-                        {toast.message}
-                    </div>
-                )}
-
-                {/* FORM */}
-                <form
-                    onSubmit={handleLogin}
-                    style={{ display: "flex", flexDirection: "column", gap: 14 }}
-                >
-                    <div className="form-field">
-                        <label
-                            style={{
-                                fontSize: 12,
-                                fontWeight: 600,
-                                color: "#555",
-                                display: "block",
-                                marginBottom: 6,
-                                textTransform: "uppercase",
-                                letterSpacing: "0.5px",
-                            }}
-                        >
-                            Email
-                        </label>
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="you@example.com"
-                            value={formData.email}
-                            onChange={handleChange}
-                            className="login-input"
-                            required
-                            autoComplete="email"
-                        />
-                    </div>
-
-                    <div className="form-field">
-                        <label
-                            style={{
-                                fontSize: 12,
-                                fontWeight: 600,
-                                color: "#555",
-                                display: "block",
-                                marginBottom: 6,
-                                textTransform: "uppercase",
-                                letterSpacing: "0.5px",
-                            }}
-                        >
-                            Password
-                        </label>
-                        <div className="pw-wrap">
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                name="password"
-                                placeholder="Enter your password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                className="login-input"
-                                style={{ paddingRight: 56 }}
-                                required
-                                autoComplete="current-password"
-                            />
-                            <button
-                                type="button"
-                                className="pw-toggle"
-                                onClick={() => setShowPassword((p) => !p)}
-                            >
-                                {showPassword ? "Hide" : "Show"}
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="form-field" style={{ marginTop: 4 }}>
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="submit-btn"
-                        >
-                            {loading ? (
-                                <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-                                    <span
-                                        style={{
-                                            width: 15,
-                                            height: 15,
-                                            border: "2px solid rgba(255,255,255,0.35)",
-                                            borderTopColor: "#fff",
-                                            borderRadius: "50%",
-                                            display: "inline-block",
-                                            animation: "spin 0.7s linear infinite",
-                                        }}
-                                    />
-                                    Signing in...
-                                </span>
-                            ) : (
-                                "Sign In"
-                            )}
-                        </button>
-                        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-                    </div>
-                </form>
-
-                {/* FOOTER */}
-                <div style={{ marginTop: 24 }}>
-                    <div className="divider">or</div>
-                    <p
-                        style={{
-                            textAlign: "center",
-                            fontSize: 13.5,
-                            color: "#888",
-                            margin: "16px 0 0",
-                        }}
-                    >
-                        Don't have an account?{" "}
-                        <Link
-                            to="/register"
-                            style={{
-                                color: "#1a1a1a",
-                                fontWeight: 600,
-                                textDecoration: "none",
-                                borderBottom: "1.5px solid #1a1a1a",
-                                paddingBottom: 1,
-                            }}
-                        >
-                            Create one
-                        </Link>
-                    </p>
-                </div>
-            </div>
+      <div
+        className="login-card"
+        style={{
+          background: "#fff",
+          borderRadius: 22,
+          border: "1px solid #ebebeb",
+          boxShadow: "0 8px 40px rgba(0,0,0,0.08)",
+          width: "100%",
+          maxWidth: 420,
+          padding: "38px 36px 32px",
+        }}
+      >
+        {/* LOGO + HEADING */}
+        <div style={{ marginBottom: 28, textAlign: "center" }}>
+          <div
+            style={{
+              width: 44,
+              height: 44,
+              background: "#1a1a1a",
+              borderRadius: 12,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 16px",
+            }}
+          >
+            <span style={{ color: "#fff", fontSize: 20 }}>✦</span>
+          </div>
+          <h1
+            style={{
+              fontSize: 24,
+              fontWeight: 700,
+              color: "#1a1a1a",
+              margin: "0 0 6px",
+              letterSpacing: "-0.4px",
+            }}
+          >
+            Welcome back
+          </h1>
+          <p style={{ color: "#999", fontSize: 14, margin: 0 }}>
+            Sign in to your TaskFlow account
+          </p>
         </div>
-    );
+
+        {/* TOAST */}
+        {toast && (
+          <div
+            className={`toast ${
+              toast.type === "success" ? "toast-success" : "toast-error"
+            }`}
+            style={{ marginBottom: 18 }}
+          >
+            <span style={{ fontSize: 16 }}>
+              {toast.type === "success" ? "✓" : "⚠"}
+            </span>
+            {toast.message}
+          </div>
+        )}
+
+        {/* FORM */}
+        <form
+          onSubmit={handleLogin}
+          style={{ display: "flex", flexDirection: "column", gap: 14 }}
+        >
+          <div className="form-field">
+            <label
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: "#555",
+                display: "block",
+                marginBottom: 6,
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+              }}
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              value={formData.email}
+              onChange={handleChange}
+              className="login-input"
+              required
+              autoComplete="email"
+            />
+          </div>
+
+          <div className="form-field">
+            <label
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: "#555",
+                display: "block",
+                marginBottom: 6,
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+              }}
+            >
+              Password
+            </label>
+            <div className="pw-wrap">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleChange}
+                className="login-input"
+                style={{ paddingRight: 56 }}
+                required
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                className="pw-toggle"
+                onClick={() => setShowPassword((p) => !p)}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+          </div>
+
+          <div className="form-field" style={{ marginTop: 4 }}>
+            <button type="submit" disabled={loading} className="submit-btn">
+              {loading ? (
+                <span
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 15,
+                      height: 15,
+                      border: "2px solid rgba(255,255,255,0.35)",
+                      borderTopColor: "#fff",
+                      borderRadius: "50%",
+                      display: "inline-block",
+                      animation: "spin 0.7s linear infinite",
+                    }}
+                  />
+                  Signing in...
+                </span>
+              ) : (
+                "Sign In"
+              )}
+            </button>
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          </div>
+        </form>
+
+        {/* FOOTER */}
+        <div style={{ marginTop: 24 }}>
+          <div className="divider">or</div>
+          <p
+            style={{
+              textAlign: "center",
+              fontSize: 13.5,
+              color: "#888",
+              margin: "16px 0 0",
+            }}
+          >
+            Don't have an account?{" "}
+            <Link
+              to="/register"
+              style={{
+                color: "#1a1a1a",
+                fontWeight: 600,
+                textDecoration: "none",
+                borderBottom: "1.5px solid #1a1a1a",
+                paddingBottom: 1,
+              }}
+            >
+              Create one
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default Login;
