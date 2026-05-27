@@ -4,35 +4,26 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
-
   return (
     <BrowserRouter>
-
       <Routes>
+        <Route path="/" element={<Login />} />
+
+        <Route path="/register" element={<Register />} />
 
         <Route
-          path="/"
-          element={<Login />}
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
         />
-
-        <Route
-          path="/register"
-          element={<Register />}
-        />
-
-        <Route
-    path="/dashboard"
-    element={
-        <ProtectedRoute>
-            <Dashboard />
-        </ProtectedRoute>
-    }
-/>
-
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>
-
     </BrowserRouter>
   );
 }

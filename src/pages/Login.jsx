@@ -273,19 +273,45 @@ function Login() {
           </div>
 
           <div className="form-field">
-            <label
+            <div
               style={{
-                fontSize: 12,
-                fontWeight: 600,
-                color: "#555",
-                display: "block",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
                 marginBottom: 6,
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
               }}
             >
-              Password
-            </label>
+              <label
+                style={{
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: "#555",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                Password
+              </label>
+              <button
+                type="button"
+                onClick={() => navigate("/reset-password")}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: 12,
+                  color: "#888",
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontWeight: 500,
+                  padding: 0,
+                  transition: "color 0.15s",
+                }}
+                onMouseEnter={(e) => (e.target.style.color = "#1a1a1a")}
+                onMouseLeave={(e) => (e.target.style.color = "#888")}
+              >
+                Forgot password?
+              </button>
+            </div>
             <div className="pw-wrap">
               <input
                 type={showPassword ? "text" : "password"}
