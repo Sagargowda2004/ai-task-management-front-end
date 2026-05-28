@@ -1,16 +1,213 @@
-# React + Vite
+# AI-Powered Task Management Portal
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An intelligent full-stack task management application with AI-powered productivity insights, smart task suggestions, JWT authentication, and cloud deployment.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+# Features
 
-## React Compiler
+## Authentication
+- User Registration
+- Secure Login with JWT
+- Password Encryption using BCrypt
+- Reset Password Feature
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Task Management
+- Create Tasks
+- Update Tasks
+- Delete Tasks
+- Set Priorities
+- Due Date Tracking
+- Task Status Management
 
-## Expanding the ESLint configuration
+## AI Productivity Assistant
+- AI-powered productivity insights
+- Smart task suggestions
+- Task prioritization recommendations
+- Workflow improvement suggestions
+- Task breakdown assistance
+- Project planning guidance
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Cloud Deployment
+- Backend deployed on Render
+- Frontend deployed on Vercel
+- PostgreSQL cloud database
+
+---
+
+# Tech Stack
+
+## Frontend
+- React.js
+- Vite
+- Tailwind CSS
+- Axios
+- React Router
+
+## Backend
+- Spring Boot
+- Spring Security
+- JWT Authentication
+- Spring Data JPA
+- Hibernate
+
+## Database
+- PostgreSQL
+
+## AI Integration
+- OpenRouter API
+- GPT-4.1 Mini
+
+## Deployment
+- Render
+- Vercel
+
+---
+
+# Architecture Overview
+
+```text
+Frontend (React)
+        |
+        v
+REST APIs (Spring Boot)
+        |
+        v
+PostgreSQL Database
+        |
+        v
+AI Integration (OpenRouter GPT)
+```
+
+---
+
+# Authentication Flow
+
+1. User registers/login
+2. JWT token generated
+3. Token stored in sessionStorage
+4. Protected APIs accessed using Bearer token
+5. Spring Security validates JWT
+
+---
+
+# AI Integration
+
+The application integrates GPT-powered AI features using OpenRouter API.
+
+### AI Capabilities
+- Productivity insights
+- Task prioritization
+- Smart recommendations
+- Project planning assistance
+- Task creation guidance
+- Deadline management suggestions
+
+### Prompt Engineering
+Custom system prompts are used to:
+- Restrict AI to productivity-related topics
+- Generate concise responses
+- Improve task analysis quality
+- Avoid irrelevant conversations
+
+---
+
+# API Endpoints
+
+## Authentication APIs
+| Method | Endpoint |
+|---|---|
+| POST | /api/auth/register |
+| POST | /api/auth/login |
+| POST | /api/auth/reset-password |
+
+## Task APIs
+| Method | Endpoint |
+|---|---|
+| GET | /api/tasks |
+| POST | /api/tasks |
+| PUT | /api/tasks/{id} |
+| DELETE | /api/tasks/{id} |
+
+## AI APIs
+| Method | Endpoint |
+|---|---|
+| POST | /api/ai/chat |
+
+---
+
+# Setup Instructions
+
+## Backend Setup
+
+### Clone Repository
+```bash
+git clone YOUR_BACKEND_REPO_LINK
+```
+
+### Configure Environment Variables
+Create `.env`:
+```env
+DB_URL=YOUR_DATABASE_URL
+DB_USERNAME=YOUR_DB_USERNAME
+DB_PASSWORD=YOUR_DB_PASSWORD
+OPENAI_API_KEY=YOUR_OPENROUTER_API_KEY
+JWT_SECRET=YOUR_SECRET
+```
+
+### Run Backend
+```bash
+mvn spring-boot:run
+```
+
+---
+
+## Frontend Setup
+```bash
+npm install
+npm run dev
+```
+
+---
+
+# Database Schema
+
+## User
+- id
+- name
+- email
+- password
+
+## Task
+- id
+- title
+- description
+- priority
+- status
+- dueDate
+- createdAt
+- user_id
+
+
+# Challenges Faced
+- JWT authentication integration
+- AI prompt engineering
+- Cloud deployment configuration
+- PostgreSQL migration
+- CORS handling
+- Frontend-backend integration
+
+---
+
+# Future Enhancements
+- Email OTP verification
+- AI-generated subtasks
+- Team collaboration
+- Real-time notifications
+- Dark mode
+- Calendar integration
+
+---
+
+# Author
+Sagar H N
